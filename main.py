@@ -2,7 +2,7 @@ import algorithm
 
 
 def main():
-    x = algorithm.read_manifest("manifest.txt")
+    moves = algorithm.balance("manifest.txt")
 
 
 if __name__ == "__main__":

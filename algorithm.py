@@ -1,3 +1,5 @@
+import itertools
+
 class Container:
     def __init__(self, name, weight):
         self.name = name
@@ -13,6 +15,33 @@ class State:
         # Dictionary of containers -- each container is indexed by a tuple of its coordinates as shown on the manifest
         # Buffer coordinates have negative values as a convention
         self.containers = containers
+
+
+def __have_to_sift(state):
+    weights = []
+    total_weight = 0
+    for key in state.containers:
+        weights.append(state.containers[key].weight)
+        total_weight += state.containers[key].weight
+
+    # Get all subsets to see if any of them satisfy the legal definition of balancing
+    n = len(weights)
+    for i in range(2 ** n):
+        subset = []
+        left_side_weight = 0
+        for j in range(n):
+            if i & (1 << j):
+                subset.append(weights[j])
+                left_side_weight += weights[j]
+        if total_weight - left_side_weight > left_side_weight:
+            bigger_weight = total_weight - left_side_weight
+            smaller_weight = left_side_weight
+        else:
+            bigger_weight = left_side_weight
+            smaller_weight = total_weight - left_side_weight
+        if bigger_weight * 0.9 <= smaller_weight and smaller_weight * 1.1 >= bigger_weight:
+            return False
+    return True
 
 
 def read_manifest(filepath):  # Takes in a manifest file and returns a State object
@@ -36,9 +65,17 @@ def read_manifest(filepath):  # Takes in a manifest file and returns a State obj
     return State(ship, containers)
 
 
-def balance():
-    pass
+def balance(manifest):
+    state = read_manifest(manifest)
+    if __have_to_sift(state):
+        return __sift()
+
+    print("Balancing!")
 
 
-def load_unload():
-    pass
+def load_unload(state):
+    print("Loading/unloading!")
+
+
+def __sift():
+    print("Sifting!")

@@ -1,14 +1,14 @@
 [01,01], {00000}, NAN
-[01,02], {00120}, Walmart Ohio 1000 air fryers
-[01,03], {13212}, Walmart Ohio Cat toys 
-[01,04], {00643}, Amazon 64834 Snap-on tools
-[01,05], {00000}, UNUSED
-[01,06], {00000}, UNUSED
-[01,07], {00000}, UNUSED
-[01,08], {00000}, UNUSED
-[01,09], {00000}, UNUSED
-[01,10], {00000}, UNUSED
-[01,11], {00000}, UNUSED
+[01,02], {00012}, Walmart Ohio 1000 air fryers
+[01,03], {00010}, Walmart Ohio Cat toys 
+[01,04], {00012}, Walmart Ohio 1000 air fryers
+[01,05], {00010}, Walmart Ohio Cat toys 
+[01,06], {00012}, Walmart Ohio 1000 air fryers
+[01,07], {00010}, Walmart Ohio Cat toys 
+[01,08], {00012}, Walmart Ohio 1000 air fryers
+[01,09], {00120}, Walmart Ohio Cat toys 
+[01,10], {00012}, Walmart Ohio 1000 air fryers
+[01,11], {00010}, Walmart Ohio Cat toys 
 [01,12], {00000}, NAN
 [02,01], {00000}, NAN
 [02,02], {00000}, UNUSED
