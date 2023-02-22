@@ -10,7 +10,7 @@ class State:
         # The array is 1 unit wider and longer so that indices start at 1, following the manifest's coord. convention
         self.ship = ship
 
-        # Dictionary of containers -- each container is indexed by its coordinates
+        # Dictionary of containers -- each container is indexed by a tuple of its coordinates as shown on the manifest
         # Buffer coordinates have negative values as a convention
         self.containers = containers
 
@@ -18,9 +18,9 @@ class State:
 def read_manifest(filepath):  # Takes in a manifest file and returns a State object
     manifest = open(filepath, 'r')
     containers = {}
-    ship = []
+    ship = [None]
     for i in range(0, 8):
-        new_row = []
+        new_row = [None]
         for j in range(0, 12):
             line = manifest.readline()
             name = line[18:].strip()
