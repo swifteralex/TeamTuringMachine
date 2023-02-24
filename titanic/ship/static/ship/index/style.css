@@ -1,0 +1,150 @@
+html * {
+   font-family: Trebuchet MS !important;
+   color: #4D455D;
+}
+
+li a {
+    color: green;
+}
+
+h1 {
+    color: #4D455D
+}
+
+body {
+    background: #4D455D;
+}
+
+legend {
+    padding-top: 15px;
+    font-size: 16px;
+}
+
+#main_box {
+    height: 100%;
+    width: 100%;
+}
+
+div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#border_box {
+    background-color: #F5E9CF;
+    border-color: whitewhitemoke;
+    display: block;
+    border-style: solid;
+    border-radius: 4%;
+    text-align: left;
+}
+
+fieldset {
+    display: block;
+    position: relative;
+    border: unset;
+    padding-top: 5px;
+}
+
+div#login_button {
+    margin-top: 25px;
+}
+
+input {
+    width: 100%;
+    height: 30px;
+}
+h2 {
+    text-align: center;
+    top: 0;
+    display: block;
+    position: relative;
+}
+
+h2#welcome:before {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 2px;
+  background: #4D455D;
+  left: 0;
+  top: 50%;
+  position: absolute;
+}
+
+h2#welcome:after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 2px;
+  background: #4D455D;
+  right: 0;
+  top: 50%;
+  position: absolute;
+}
+
+input.click_button, label[for="manifest_file_button"] {
+    height: 40px;
+    width: 80px;
+    background-color: #7DB9B6;
+    border-radius: 10%;
+    border-color: unset;
+}
+
+label[for="manifest_file_button"] {
+    display: flex;
+    align-items: center;
+    background-color: #C92C6D;
+    color: #F5E9CF;
+    justify-content: center;
+}
+
+input#manifest_file {
+    background-color: cornflowerblue;
+    color: white;
+}
+.id_specifics {
+    float: left;
+}
+
+.id_box {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 15px;
+    padding-top: 12px;
+}
+
+span.name_label {
+    font-weight: bold;
+}
+
+span.name_tag {
+    padding-left: 8px;
+}
+
+.button_wrapper {
+    flex-direction: column;
+}
+
+#load_button {
+    background: #C92C6D;
+    color: white;
+}
+
+#balance_button {
+    background: #7DB9B6;
+    color: white;
+}
+
+a.click_button.transaction_button {
+    height: 40px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4%;
+    width: 40%;
+    margin-top: 15px;
+}

@@ -1,0 +1,95 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'ship/load/style.css' %}">
+<script src="{% static 'ship/load/functionality.js' %}"></script>
+
+<div id="main_box">
+    <div id="border_box">
+        <div id="header_wrapper">
+            <div class="id_box">
+                <div class="id_specifics ship_name">
+                    <span class="name_label"> Ship Name: </span><span class="name_tag"> {{ ship_name }}</span>
+                </div>
+                <div class="id_specifics clock">
+                    <span class="name_label"> Time: </span><span class="name_tag time_tag" id="clock_time"> </span>
+                </div>
+                <div class="id_specifics operator_name">
+                    <span class="name_label"> Operator Name: </span><span class="name_tag"> {{ operator_name }}</span>
+                </div>
+            </div>
+    </div>
+        <div id="content-wrapper">
+            <div id="transaction-wrapper">
+                <div id="tab-button"> 
+                    <button onclick="toggleType('load')" id="load-set" value="Load" class="tab-click">Load</button>
+                    <button onclick="toggleType('unload')" id="unload-set" value="Unload" class="tab-click">Unload</button>
+                </div>
+                <div id="load-wrapper">
+                    <div id="ship-grid" onload="adjustGrid()">
+                        {% for container in containers %}
+                            <div onclick="toggleClick(this)" onmouseout="highlightElements(this)" onmouseover="highlightElements(this)" row="{{ container.row }}" column="{{container.column}}" class="grid-cell cell-{{container.name}} container-{{container.name}}"> 
+                                <span class="grid-content">{{ container.name }}</span>
+                                </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="unload-wrapper" class="hidden">
+                    <div id="unload-contents">
+                        <div id="container-info-wrapper">
+                            <div class="container-info container-name-filler">
+                                <span class="container-name-text">Container Name</span>
+                                <input type="text" id="container-typed-name">
+                            </div>
+                            <div class="container-info container-weight-filler">
+                                <span class="container-name-text">Weight</span>
+                                <input type="text" id="container-typed-weight">
+                            </div>
+                            <div class="container-info container-amount-filler">
+                                <span class="container-amount-text">Amount</span>
+                                <input type="text" id="container-typed-amount">
+                            </div>
+                            <div class="container-info add-button">
+                                <button onclick="triggerContainerAppend()" id="container-submit-item"> Add </button>
+                            </div>
+                        </div>
+
+                        <div id="container-added-list-wrapper">
+                            <ul id="container-added-list">
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="details-wrapper">
+                <div id="details-context">
+                    <div id="counts-box" class="count-items">
+                        <span class="count-text">Selected Container Counts</span>
+                        <div class="load-content count-items">
+                            <span class="load-count-text">Load:</span><span id="load-count-value" class="count-value">0</span>
+                        </div>
+                        <div class="unload-content count-items">
+                            <span class="unload-count-text">Unload:</span><span id="unload-count-value" class="count-value">0</span>
+                        </div>
+                    </div>
+                    <div id="search-box">
+                        <div id="dropdown">
+                            <input type="text" placeholder="Type the container's name.." id="container-input" onkeyup="filterFunction()">
+                            <div id="dropdown-content">
+                                    {% for name in containerNames %}
+                                    <span class="container-list container-{{name}}" onclick="toggleClick(this)" onmouseover="highlightElements(this)" onmouseout="highlightElements(this)"> 
+                                    {{name}}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div id="button-box">
+                        <input type="submit">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
