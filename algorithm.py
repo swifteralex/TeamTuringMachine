@@ -2,10 +2,11 @@ import copy
 
 
 class Container:
-    def __init__(self, name, weight, sifted=False):
+    def __init__(self, name, weight, sifted=False, destination=None):
         self.name = name
         self.weight = weight
         self.sifted = sifted
+        self.destination = destination
 
 
 class State:
@@ -19,22 +20,30 @@ class State:
         self.containers = containers
 
 
-def __have_to_sift(state):
-    weights = []
+def __get_balanced_arrangements(state):
+    arrangements = []
+
+    coords = list(state.containers.keys())
     total_weight = 0
     for key in state.containers:
-        weights.append(state.containers[key].weight)
         total_weight += state.containers[key].weight
 
-    # Get all subsets to see if any of them satisfy the legal definition of balancing
-    n = len(weights)
+    # Calculate available space in the ship. This is important if the ship is especially small
+    space = 0
+    for i in range(1, 9):
+        for j in range(1, 7):
+            if state.ship[i][j]:
+                space += 1
+
+    # Get all subsets that satisfy the legal definition of balancing
+    n = len(coords)
     for i in range(2 ** n):
         subset = []
         left_side_weight = 0
         for j in range(n):
             if i & (1 << j):
-                subset.append(weights[j])
-                left_side_weight += weights[j]
+                subset.append(coords[j])
+                left_side_weight += state.containers[coords[j]].weight
         if total_weight - left_side_weight > left_side_weight:
             bigger_weight = total_weight - left_side_weight
             smaller_weight = left_side_weight
@@ -42,8 +51,10 @@ def __have_to_sift(state):
             bigger_weight = left_side_weight
             smaller_weight = total_weight - left_side_weight
         if bigger_weight * 0.9 <= smaller_weight and smaller_weight * 1.1 >= bigger_weight:
-            return False
-    return True
+            if len(subset) <= space and len(state.containers) - len(subset) <= space:
+                arrangements.append(subset)
+
+    return arrangements
 
 
 def read_manifest(filepath):  # Takes in a manifest file and returns a State object
@@ -69,12 +80,89 @@ def read_manifest(filepath):  # Takes in a manifest file and returns a State obj
 
 def balance(manifest):
     state = read_manifest(manifest)
-    if __have_to_sift(state):
-        return __sift(state)
-        # for key in state.containers:
-        #     print(str(key) + " " + str(state.containers[key].weight))
+    arrangements = __get_balanced_arrangements(state)
 
-    print("Balancing!")
+    if not arrangements:
+        return __sift(state)
+
+    best_move_set = []
+    best_move_set_time = 999
+
+    for arrangement in arrangements:
+        state_c = copy.deepcopy(state)
+        misplaced_coords = []
+
+        for key in state_c.containers:
+            if key in arrangement and key[1] >= 7:
+                state_c.containers[key].destination = "left"
+                misplaced_coords.append(key)
+            elif key not in arrangement and key[1] <= 6:
+                state_c.containers[key].destination = "right"
+                misplaced_coords.append(key)
+
+        # Search through misplaced coords. If there is a misplaced coord above it, skip it for later.
+        # Once a valid misplaced coord is found, free it and move it to the other side. When freeing, don't
+        # place containers on top of other misplaced coords, unless the program has to.
+        move_set = []
+        finished = False
+        while not finished:
+            finished = True
+            coord = []
+
+            if misplaced_coords:
+                for remaining_coord in misplaced_coords:
+                    if remaining_coord in state_c.containers and not state_c.containers[remaining_coord].sifted:
+                        coord = remaining_coord
+                        finished = False
+                        break
+            else:
+                for key in state_c.containers:
+                    if key[0] < 0:
+                        coord = key
+                        finished = False
+                        break
+
+            if not finished:
+                free_to_move = True
+                top_coord = (coord[0] + 1, coord[1])
+                while top_coord[0] <= 8:
+                    if top_coord in misplaced_coords:
+                        free_to_move = False
+                        misplaced_coords.remove(coord)
+                        misplaced_coords.append(coord)
+                        break
+                    top_coord = (top_coord[0] + 1, top_coord[1])
+                if free_to_move or not misplaced_coords:
+                    if coord[0] > 0:
+                        if coord[1] <= 6:
+                            excluded_columns = [coord[1], 7, 8, 9, 10, 11, 12]
+                        else:
+                            excluded_columns = [coord[1], 1, 2, 3, 4, 5, 6]
+                        __free_coord(
+                            state_c, coord, move_set, coord, [], misplaced_coords, excluded_columns, "balancing"
+                        )
+
+                    if coord[1] >= 7 or (not misplaced_coords and state_c.containers[coord].destination == "left"):
+                        excluded_columns = [7, 8, 9, 10, 11, 12]
+                    else:
+                        excluded_columns = [1, 2, 3, 4, 5, 6]
+                    __free_coord(
+                        state_c, (coord[0] - 1, coord[1]), move_set, coord, [], misplaced_coords, excluded_columns, "balancing"
+                    )
+
+                    if coord[0] > 0:
+                        misplaced_coords.remove(coord)
+                    if move_set[-1][-1][0] > 0:
+                        state_c.containers[move_set[-1][-1]].sifted = True
+
+        total_time = 0
+        for move in move_set:
+            total_time += len(move)
+        if total_time < best_move_set_time:
+            best_move_set_time = total_time
+            best_move_set = move_set
+
+    return best_move_set
 
 
 def load_unload(state):
@@ -141,7 +229,8 @@ def __sift(state):
         #      (prefer putting heavier weights on top of lighter weights)
         #   2. if that isn't possible, the buffer
         __free_coord(
-            state, best_target, move_set, best_target, weights, destinations, [destination[1], best_target[1]]
+            state, best_target, move_set, best_target, weights, destinations,
+            [destination[1], best_target[1]], "sifting"
         )
 
         # For each container in the destination column, move it to
@@ -150,7 +239,7 @@ def __sift(state):
         #   2. if that isn't possible, the buffer
         best_target = __free_coord(
             state, (destination[0] - 1, destination[1]), move_set, best_target, weights, destinations,
-            [destination[1], best_target[1]]
+            [destination[1], best_target[1]], "sifting"
         )
 
         # Find best route to destination spot
@@ -217,10 +306,7 @@ def __interpolate(state, start, end):
     return moves
 
 
-def __free_coord(state, coord_to_free, move_set, target, weights, destinations, excluded_columns=None):
-    if excluded_columns is None:
-        excluded_columns = []
-
+def __free_coord(state, coord_to_free, move_set, target, weights, destinations, excluded_columns, action):
     while (coord_to_free[0] + 1, coord_to_free[1]) in state.containers:
         coord = (8, coord_to_free[1])
         while coord not in state.containers:
@@ -228,37 +314,57 @@ def __free_coord(state, coord_to_free, move_set, target, weights, destinations, 
         top_container_weight = state.containers[coord].weight
 
         moves = __get_moves(state, excluded_columns)
-
         ideal_moves = []
         ideal_column_moves = []
-        lighter_on_heavier_columns = []
+        less_ideal_moves = []
         buffer_moves = []
         for move in moves:
-            try:
-                if move == destinations[weights.index(top_container_weight)]:
-                    ideal_column_moves.clear()
-                    ideal_column_moves.append(move)
-                    break
-            except ValueError:
-                pass
+            if action == "sifting":
+                try:
+                    if move == destinations[weights.index(top_container_weight)]:
+                        ideal_column_moves.clear()
+                        ideal_column_moves.append(move)
+                        break
+                except ValueError:
+                    pass
 
-            if move[0] < 0:
-                buffer_moves.append(move)
-            elif (move[0] - 1, move[1]) not in state.containers:
-                ideal_column_moves.append(move)
-            else:
-                if state.containers[(move[0] - 1, move[1])].sifted:
-                    ideal_column_moves.append(move)
-                elif state.containers[(move[0] - 1, move[1])].weight <= top_container_weight:
+                if move[0] < 0:
+                    buffer_moves.append(move)
+                elif (move[0] - 1, move[1]) not in state.containers:
                     ideal_column_moves.append(move)
                 else:
-                    lighter_on_heavier_columns.append(move)
+                    if state.containers[(move[0] - 1, move[1])].sifted:
+                        ideal_column_moves.append(move)
+                    elif state.containers[(move[0] - 1, move[1])].weight <= top_container_weight:
+                        ideal_column_moves.append(move)
+                    else:
+                        less_ideal_moves.append(move)
+            elif action == "balancing":
+                if move[0] < 0:
+                    buffer_moves.append(move)
+                elif (move[0] - 1, move[1]) not in state.containers:
+                    ideal_column_moves.append(move)
+                else:
+                    column_contains_misplaced = False
+                    top_coord = (0, move[1])
+                    while top_coord[0] <= 8:
+                        if top_coord in destinations and not state.containers[top_coord].sifted:
+                            column_contains_misplaced = True
+                            break
+                        top_coord = (top_coord[0] + 1, top_coord[1])
+                    if not column_contains_misplaced:
+                        ideal_column_moves.append(move)
 
-        if not ideal_column_moves and not lighter_on_heavier_columns:
+        if not ideal_column_moves and not less_ideal_moves:
             ideal_moves = __interpolate(state, coord, buffer_moves[0])
+            if action == "balancing" and state.containers[coord].destination is None:
+                if coord[1] <= 6:
+                    state.containers[coord].destination = "left"
+                else:
+                    state.containers[coord].destination = "right"
         else:
             if not ideal_column_moves:
-                moves = lighter_on_heavier_columns
+                moves = less_ideal_moves
             else:
                 moves = ideal_column_moves
             best_distance = 99
@@ -270,7 +376,7 @@ def __free_coord(state, coord_to_free, move_set, target, weights, destinations, 
         move_set.append(ideal_moves)
         container_to_move = state.containers.pop(coord)
         state.containers[ideal_moves[-1]] = container_to_move
-        if ideal_moves[0] == target:
+        if ideal_moves[0] == target and not action == "balancing":
             excluded_columns.append(ideal_moves[-1][1])
             target = ideal_moves[-1]
     return target
