@@ -1,4 +1,5 @@
 import copy
+import itertools
 
 
 class Container:
@@ -165,8 +166,132 @@ def balance(manifest):
     return best_move_set
 
 
-def load_unload(state):
-    print("Loading/unloading!")
+def load_unload(manifest, loads, unloads):
+    state = read_manifest(manifest)
+
+    # Get list of all possible unload sequences
+    all_unload_orderings = []
+    if unloads:
+        possible_unloads = []
+        for unload in unloads:
+            duplicates = []
+            for key in state.containers:
+                if state.containers[key].weight == state.containers[unload].weight \
+                        and state.containers[key].name == state.containers[unload].name:
+                    duplicates.append(key)
+            possible_unloads.append(duplicates)
+
+        first_unloads = possible_unloads.pop()
+        sequences = []
+        for unload in first_unloads:
+            sequences.append([unload])
+        for unload in possible_unloads:
+            temp = []
+            for coord in unload:
+                new_sequences = copy.deepcopy(sequences)
+                for sequence in new_sequences:
+                    sequence.append(coord)
+                temp += new_sequences
+            sequences = temp
+
+        for sequence in sequences:
+            removed_duplicates = [*set(sequence)]
+            if len(removed_duplicates) == len(unloads):
+                permuted_orderings = list(__permutations(removed_duplicates))
+                for ordering in permuted_orderings:
+                    if ordering not in all_unload_orderings:
+                        all_unload_orderings.append(ordering)
+
+    valid_unload_orderings = []
+    for ordering in all_unload_orderings:
+        add_ordering = True
+        for i in range(0, len(ordering)):
+            for j in range(0, len(ordering)):
+                if ordering[i][1] == ordering[j][1] and ordering[i][0] > ordering[j][0] and i < j:
+                    add_ordering = False
+        if add_ordering:
+            valid_unload_orderings.append(ordering)
+
+    best_move_set = []
+    best_move_set_distance = 999
+    if not valid_unload_orderings:
+        valid_unload_orderings.append(None)
+    for unloads_c in valid_unload_orderings:
+        loads_c = copy.deepcopy(loads)
+        move_set = []
+        state_c = copy.deepcopy(state)
+        empty_buffer = False
+        while loads_c or unloads_c or empty_buffer:
+            if unloads_c and unloads_c is not None:
+                excluded_columns = []
+                for coord in unloads_c:
+                    excluded_columns.append(coord[1])
+                coord = unloads_c.pop()
+                __free_coord(state_c, coord, move_set, coord, [], [], excluded_columns, "load_unload")
+                move_set.append(__interpolate(state_c, coord, (9, 1)))
+                move_set[-1].append((0, 0))
+                state_c.containers.pop(coord)
+
+            if loads_c:
+
+                excluded_columns = []
+                if unloads_c is not None:
+                    for coord in unloads_c:
+                        excluded_columns.append(coord[1])
+                moves = __get_moves(state_c, excluded_columns)
+                best_distance = 99
+                best_move = []
+                for move in moves:
+                    if move[0] > 0:
+                        interpolated_move = __interpolate(state_c, (9, 1), move)
+                        if len(interpolated_move) < best_distance:
+                            best_move = interpolated_move
+                            best_distance = len(interpolated_move)
+                if best_move:
+                    loaded_container = loads_c.pop()
+                    best_move.insert(0, loaded_container)
+                    move_set.append(best_move)
+                    state_c.containers[best_move[-1]] = Container(loaded_container, 0)
+
+            empty_buffer = False
+            buffer_cord = ()
+            for key in state_c.containers:
+                if key[0] < 0:
+                    empty_buffer = True
+                    buffer_cord = key
+                    break
+            if (not unloads_c or unloads_c is None) and not loads_c and empty_buffer:
+                moves = __get_moves(state_c, [])
+                best_distance = 99
+                best_move = []
+                for move in moves:
+                    if move[0] > 0:
+                        interpolated_move = __interpolate(state_c, buffer_cord, move)
+                        if len(interpolated_move) < best_distance:
+                            best_move = interpolated_move
+                            best_distance = len(interpolated_move)
+                move_set.append(best_move)
+                container_to_move = state_c.containers.pop(buffer_cord)
+                state.containers[best_move[-1]] = container_to_move
+
+        total_distance = 0
+        for move in move_set:
+            total_distance += len(move)
+        if total_distance < best_move_set_distance:
+            best_move_set_distance = total_distance
+            best_move_set = move_set
+
+    return best_move_set
+
+
+def __permutations(elements):
+    if len(elements) <= 1:
+        yield elements
+        return
+    for perm in __permutations(elements[1:]):
+        for i in range(len(elements)):
+            # nb elements[0:1] works in both string and list contexts
+            yield perm[:i] + elements[0:1] + perm[i:]
 
 
 def __sift(state):
@@ -299,7 +424,7 @@ def __interpolate(state, start, end):
     while coord[0] > end[0]:
         coord = (coord[0] - 1, coord[1])
         moves.append(coord)
-    while coord[0] < end[0] < 0:
+    while coord[0] < end[0]:
         coord = (coord[0] + 1, coord[1])
         moves.append(coord)
 
@@ -354,6 +479,11 @@ def __free_coord(state, coord_to_free, move_set, target, weights, destinations, 
                         top_coord = (top_coord[0] + 1, top_coord[1])
                     if not column_contains_misplaced:
                         ideal_column_moves.append(move)
+            else:
+                if move[0] < 0:
+                    buffer_moves.append(move)
+                else:
+                    ideal_column_moves.append(move)
 
         if not ideal_column_moves and not less_ideal_moves:
             ideal_moves = __interpolate(state, coord, buffer_moves[0])
