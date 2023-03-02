@@ -228,12 +228,20 @@ def load_unload(manifest, loads, unloads):
                     excluded_columns.append(coord[1])
                 coord = unloads_c.pop()
                 __free_coord(state_c, coord, move_set, coord, [], [], excluded_columns, "load_unload")
-                move_set.append(__interpolate(state_c, coord, (9, 1)))
+                moves = __interpolate(state_c, coord, (9, 1))
+                beginning_move = ()
+                if not move_set:
+                    beginning_move = (9, 1)
+                else:
+                    beginning_move = move_set[-1][-1]
+                empty_moves = __interpolate(state_c, beginning_move, moves[0])
+                if empty_moves:
+                    move_set.append(empty_moves)
+                move_set.append(moves)
                 move_set[-1].append((0, 0))
                 state_c.containers.pop(coord)
 
             if loads_c:
-
                 excluded_columns = []
                 if unloads_c is not None:
                     for coord in unloads_c:
@@ -250,6 +258,14 @@ def load_unload(manifest, loads, unloads):
                 if best_move:
                     loaded_container = loads_c.pop()
                     best_move.insert(0, loaded_container)
+                    beginning_move = ()
+                    if not move_set:
+                        beginning_move = (9, 1)
+                    else:
+                        beginning_move = move_set[-1][-1]
+                    empty_moves = __interpolate(state_c, beginning_move, best_move[0])
+                    if empty_moves:
+                        move_set.append(empty_moves)
                     move_set.append(best_move)
                     state_c.containers[best_move[-1]] = Container(loaded_container, 0)
 
@@ -270,6 +286,14 @@ def load_unload(manifest, loads, unloads):
                         if len(interpolated_move) < best_distance:
                             best_move = interpolated_move
                             best_distance = len(interpolated_move)
+                beginning_move = ()
+                if not move_set:
+                    beginning_move = (9, 1)
+                else:
+                    beginning_move = move_set[-1][-1]
+                empty_moves = __interpolate(state_c, beginning_move, best_move[0])
+                if empty_moves:
+                    move_set.append(empty_moves)
                 move_set.append(best_move)
                 container_to_move = state_c.containers.pop(buffer_cord)
                 state.containers[best_move[-1]] = container_to_move
@@ -369,6 +393,11 @@ def __sift(state):
 
         # Find best route to destination spot
         moves = __interpolate(state, best_target, destination)
+        if not move_set:
+            beginning_move = (9, 1)
+        else:
+            beginning_move = move_set[-1][-1]
+        move_set.append(__interpolate(state, beginning_move, moves[0]))
         move_set.append(moves)
         container_to_move = state.containers.pop(best_target)
         container_to_move.sifted = True
@@ -397,6 +426,21 @@ def __get_moves(state, excluded_columns):
 
 
 def __interpolate(state, start, end):
+    if type(start) is str:
+        start = (0, 0)
+    if type(end) is str:
+        end = (0, 0)
+
+    truck_start = False
+    truck_end = False
+    if start == (0, 0):
+        start = (9, 1)
+        truck_start = True
+    if end == (0, 0):
+        end = (9, 1)
+        truck_end = True
+
+
     if start[0] < 0 and end[0] > 0:
         return __interpolate(state, start, (-5, -24)) + __interpolate(state, (9, 1), end)
     if start[0] > 0 and end[0] < 0:
@@ -427,6 +471,14 @@ def __interpolate(state, start, end):
     while coord[0] < end[0]:
         coord = (coord[0] + 1, coord[1])
         moves.append(coord)
+
+    if truck_start:
+        moves.insert(0, (0, 0))
+    if truck_end:
+        moves.append((0, 0))
+
+    if len(moves) == 1 or moves == [(0, 0), (9, 1), (0, 0)]:
+        return []
 
     return moves
 
@@ -503,6 +555,12 @@ def __free_coord(state, coord_to_free, move_set, target, weights, destinations, 
                 if len(distance) < best_distance:
                     ideal_moves = distance
                     best_distance = len(distance)
+        beginning_move = ()
+        if not move_set:
+            beginning_move = (9, 1)
+        else:
+            beginning_move = move_set[-1][-1]
+        move_set.append(__interpolate(state, beginning_move, ideal_moves[0]))
         move_set.append(ideal_moves)
         container_to_move = state.containers.pop(coord)
         state.containers[ideal_moves[-1]] = container_to_move
