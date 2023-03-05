@@ -308,6 +308,7 @@ def load_unload(manifest, loads, unloads):
     return best_move_set
 
 
+# Credit: this function comes from https://stackoverflow.com/questions/104420/how-do-i-generate-all-permutations-of-a-list
 def __permutations(elements):
     if len(elements) <= 1:
         yield elements
