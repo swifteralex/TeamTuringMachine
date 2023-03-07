@@ -58,6 +58,24 @@ def __get_balanced_arrangements(state):
     return arrangements
 
 
+def get_remaining_time(moves, moves_i=0, moves_j=0):
+    def __get_time(coord1, coord2):
+        if type(coord1) == str or coord1[0] == 0 or coord2[0] == 0:
+            return 2
+        if coord1[0] > 0 and coord2[1] < 0 or coord1[0] < 0 and coord2[1] > 0:
+            return 4
+        return 1
+
+    total_time = 0
+    offset = True
+    for i in range(moves_i, len(moves)):
+        for j in range(moves_j if offset else 0, len(moves[i]) - 1):
+            total_time += __get_time(moves[i][j], moves[i][j+1])
+        offset = False
+
+    return total_time
+
+
 def read_manifest(filepath):  # Takes in a manifest file and returns a State object
     manifest = open(filepath, 'r')
     containers = {}
@@ -156,9 +174,7 @@ def balance(manifest):
                     if move_set[-1][-1][0] > 0:
                         state_c.containers[move_set[-1][-1]].sifted = True
 
-        total_time = 0
-        for move in move_set:
-            total_time += len(move)
+        total_time = get_remaining_time(move_set)
         if total_time < best_move_set_time:
             best_move_set_time = total_time
             best_move_set = move_set
@@ -298,11 +314,9 @@ def load_unload(manifest, loads, unloads):
                 container_to_move = state_c.containers.pop(buffer_cord)
                 state.containers[best_move[-1]] = container_to_move
 
-        total_distance = 0
-        for move in move_set:
-            total_distance += len(move)
-        if total_distance < best_move_set_distance:
-            best_move_set_distance = total_distance
+        total_time = get_remaining_time(move_set)
+        if total_time < best_move_set_distance:
+            best_move_set_distance = total_time
             best_move_set = move_set
 
     return best_move_set
