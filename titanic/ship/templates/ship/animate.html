@@ -1,0 +1,175 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'ship/animate/style.css' %}">
+<script src="{% static 'ship/animate/functionality.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+<body  onload="prepData({{ action_sequence }}, {{remainingTime}});">
+    <div id="log-out-box" class="hidden">
+        <div onclick="toggleLogOut(this)" id="shadow-out-box"></div>
+        <div id="log-out-wrapper">
+        {% if isBalance %}
+        <form id="logout-form" action="{% url 'ship:logout' shipid%}" method="post">
+            {% csrf_token %}
+            <fieldset>
+                <legend><h3>Operator Name</h3></legend>
+                    <input type="text" name="op_first" id="op_first" value="{{ firstname }}">
+                <legend><h3>Operator Last Name</h3></legend>
+                    <input type="text" name="op_last" id="op_last" value="{{ lastname }}">
+                    <input class="hidden" name="go_back" id="go_back" value="animate">
+                    <input class="hidden" name="action_type" value="load">
+                    <input type="submit" id="hidden-submit" class="hidden">
+            </fieldset>
+            <div id="login_button">
+                <input type="submit" value="Login" class="click_button">
+            </div>
+        </form>
+        {% else %}
+        <form id="logout-form" action="{% url 'ship:logoutAnimate' shipid%}" method="post">
+            {% csrf_token %}
+            <fieldset>
+                <legend><h3>Operator Name</h3></legend>
+                    <input type="text" name="op_first" id="op_first" value="{{ firstname }}">
+                <legend><h3>Operator Last Name</h3></legend>
+                    <input type="text" name="op_last" id="op_last" value="{{ lastname }}">
+                    <input class="hidden" name="go_back" id="go_back" value="animate">
+                    <input id="hidden-load-input" class="hidden" name="load_list" value="{{loads}}">
+                    <input id="hidden-unload-input" class="hidden" name="unload_list" value="{{unloads}}">
+                    <input id="hidden-load-weights" class="hidden" name="load_weights" value="{{loadWeights}}">
+                    <input class="hidden" name="action_type" value="load">
+                    <input type="submit" id="hidden-submit" class="hidden">
+            </fieldset>
+            <div id="login_button">
+                <div onclick="logOut({{ shipid }});" value="Login" class="click_button">Login</div>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+    </div>
+    <div id="log-box" class="hidden">
+        <div onclick="toggleLog(this)" id="shadow-box"></div>
+        <div id="log-entry-wrapper">
+            <span onclick="toggleLog(this)" id="log-close-button"> x </span>
+            <h3 id="log-header">Submit your log entry</h3>
+            <textarea type="text" id="log-entry"></textarea>
+            <button onclick="submitLogEntry()" id="submit-log" target="{% url 'ship:log' userid %}">Done</button>
+        </div>
+    </div>
+    <div id="process-done-box" class="hidden">
+        <div onclick="toggleProcess({{shipid}})" id="shadow-process-box"></div>
+        <div id="process-wrapper">
+            <h1 id="process-header">Process Successful!</h1>
+            <h2 id="reminder-header">Don't forget to email the outbound manifest to the captain</h2>
+            <h3> What would you like to do next?</h3>
+            <a href="{% url 'ship:index'%}" id="new-login">
+                <button class="decide-button logout-button">Logout</button>
+            </a>
+            <a href="{% url 'ship:manifest' userid %}" id="new-manifest">
+                <button class="decide-button manifest-button">Manifest Page</button>
+            </a>
+        </div>
+    </div>
+<div id="main_box">
+    <div id="border_box">
+        <div id="header_wrapper">
+            <div class="id_box">
+                <div onclick="toggleLog(this);" class="log-button-div"><button id="log-button">New Log Entry</button></div>
+                <div class="id_specifics ship_name">
+                    <span class="name_label"> Ship Name: </span><span class="name_tag"> {{ ship_name }}</span>
+                </div>
+                <div class="id_specifics clock">
+                    <span class="name_label"> Time: </span><span class="name_tag time_tag" id="clock_time"> </span>
+                </div>
+                <div class="id_specifics operator_name">
+                    <span class="name_label"> Operator Name: </span><span id="operator-name-tag" class="name_tag"> {{ operator_name }}</span>
+                </div>
+                <div class="logout_box">
+                    <button class="toggle-logout-button" onclick="toggleLogOutBox();">Log Out</button>
+                </div>
+            </div>
+    </div>
+        <div id="content-wrapper">
+            <div id="transaction-wrapper">
+                <div id="extra-wrapper">
+                <div id="details-wrapper">
+                    <div id="details-context">
+                        <div id="step-wrapper">
+                            <div id="step-details">
+                                <div onclick="changeStep(false);" class="prev-button step-change-button"><button class="prev-button click-button"><</button></div>
+                                <div id="step-info">
+                                    <span id="current-step" class="current-step step-tag">1</span>
+                                    <span class="step-tag">/</span>
+                                    <span id="total-step" class="step-tag"></span>
+                                </div>
+                                <div onclick="changeStep(true);" class="next-button step-change-button"><button class="next-button click-button">></button></div>
+                            </div>
+                            <div id="step-time-info">
+                                <span id="current-time" class="current-step step-tag">Remaining Time(min:sec): </span>
+                                <span id="estimated-time" class="step-tag"></span>
+                            </div>
+                        </div>
+                        <div id="buttons-wrapper">
+                            <div onclick="togglePause();" class="pause-button-div"><button id="pause-button">Pause</button></div>
+                            <div onclick="containerDone();" class="step-done-button-div"><button id="step-complete-button">Action Complete</button></div>
+                        </div>
+                        <div id="proccess-complete-wrapper">
+                            <button onclick="toggleProcess({{shipid}});" id="proccess-complete-button" class="finished-button hidden"> Transaction Complete </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="buffer-wrapper" >
+                    <div id="buffer-grid">
+                        <div row="-5" column="-21" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-5" column="-22" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-5" column="-23" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-5" column="-24" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-5" column="-25" class="grid-cell extra-space grid-buffer visibility-none">UNUSED</div>
+                        <div row="-4" column="-21" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-4" column="-22" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-4" column="-23" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-4" column="-24" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-4" column="-25" class="grid-cell extra-space grid-buffer visibility-none">UNUSED</div>
+                        <div row="-3" column="-21" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-3" column="-22" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-3" column="-23" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-3" column="-24" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-3" column="-25" class="grid-cell extra-space grid-buffer visibility-none">UNUSED</div>
+                        <div row="-2" column="-21" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-2" column="-22" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-2" column="-23" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-2" column="-24" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-2" column="-25" class="grid-cell extra-space grid-buffer visibility-none">UNUSED</div>
+                        <div row="-1" column="-21" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-1" column="-22" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-1" column="-23" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="-1" column="-24" class="grid-cell extra-space grid-buffer container-UNUSED">UNUSED</div>
+                        <div row="0" column="0" class="grid-cell extra-space grid-buffer grid-truck">Truck</div>
+                    </div>
+                </div>
+            </div>
+                <div id="unload-wrapper" >
+                    <div id="ship-grid" onload="adjustGrid()">
+                        <div row="9" column="1" class="grid-cell extra-space"></div>
+                        <div row="9" column="2" class="grid-cell extra-space"></div>
+                        <div row="9" column="3" class="grid-cell extra-space"></div>
+                        <div row="9" column="4" class="grid-cell extra-space"></div>
+                        <div row="9" column="5" class="grid-cell extra-space"></div>
+                        <div row="9" column="6" class="grid-cell extra-space"></div>
+                        <div row="9" column="7" class="grid-cell extra-space"></div>
+                        <div row="9" column="8" class="grid-cell extra-space"></div>
+                        <div row="9" column="9" class="grid-cell extra-space"></div>
+                        <div row="9" column="10" class="grid-cell extra-space"></div>
+                        <div row="9" column="11" class="grid-cell extra-space"></div>
+                        <div row="9" column="12" class="grid-cell extra-space"></div>
+                        {% for container in containers %}
+                            <div weight="{{container.weight}}" row="{{ container.row }}" column="{{container.column}}" class="grid-cell container-{{container.name}}"> 
+                                <span class="grid-content">{{ container.name }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>

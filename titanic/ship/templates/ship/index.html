@@ -1,0 +1,19 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'ship/index/style.css' %}">
+<div id="main_box">
+    <div id="border_box">
+        <form action="{% url 'ship:login'%}" method="post">
+            {% csrf_token %}
+            <fieldset>
+                <legend><h3>Operator Name</h3></legend>
+                    <input type="text" name="op_first" id="op_first" value="{{ firstname }}">
+                <legend><h3>Operator Last Name</h3></legend>
+                    <input type="text" name="op_last" id="op_last" value="{{ lastname }}">
+            </fieldset>
+            <div id="login_button">
+                <input type="submit" value="Login" class="click_button">
+            </div>
+        </form>
+    </div>
+</div>

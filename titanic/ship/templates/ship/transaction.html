@@ -1,0 +1,21 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'ship/index/style.css' %}">
+
+<div id="main_box">
+    <div id="border_box">
+        <div class="id_box">
+            <div class="id_specifics ship_name">
+            <span class="name_label"> Ship Name: </span><span class="name_tag"> {{ ship_name }}</span>
+            </div>
+            <div class="id_specifics operator_name">
+            <span class="name_label"> Operator Name: </span><span class="name_tag"> {{ operator_name }}</span></div>
+        </div><fieldset>
+                <h3>Choose the action you want to take: </h3>
+                <div class="button_wrapper">
+                    <a  href="{% url 'ship:load' userid shipid %}" name="load/unload" class="click_button transaction_button" id="load_button">Load / Unload</a>
+                    <a  href="{% url 'ship:animate' userid shipid %}" name="animate" class="click_button transaction_button" id="balance_button"> Balance </a>
+                </div>
+            </fieldset>
+    </div>
+</div>

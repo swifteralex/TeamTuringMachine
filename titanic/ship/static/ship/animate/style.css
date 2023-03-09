@@ -1,0 +1,623 @@
+/*
+color palette:
+
+black: #4D455D
+red: #E96479
+white: #FEF5E2
+blue: #7DB9B6
+purple: #C92C6D
+yellow: #FFBF00
+*/
+
+html * {
+    font-family: Trebuchet MS !important;
+    font-size: 20px;
+ }
+ 
+ li a {
+    color: green;
+ }
+ 
+ h1 {
+    color: black
+ }
+ 
+ body {
+    background: #FEF5E2 no-repeat;
+    color: #FEF5E2
+ }
+ 
+ #main_box {
+    height: 100%;
+    width: 100%;
+ }
+ 
+ div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+ }
+ 
+ #border_box {
+    background-color: #FEF5E2;
+    display: block;
+    text-align: left;
+    width: 100%;
+    height: 100%;
+ }
+ 
+ .id_specifics {
+    float: left;
+ }
+ 
+ .id_box {
+    justify-content: space-evenly;
+    padding-left: 15px;
+    height: 100%;
+    font-size: larger;
+ }
+ 
+ span.name_label {
+    font-weight: bold;
+ }
+ 
+ span.name_tag {
+    padding-left: 8px;
+ }
+
+ div#header_wrapper {
+    width: 100%;
+    display: block;
+    height: 80px;
+    background-color: #4D455D;
+    color: #FEF5E2
+}
+
+.grid-cell.container-NAN {
+   background-color: #4D455D;
+   content-visibility: hidden;
+}
+
+div#ship-grid {
+   display: grid;
+   grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto;
+}
+
+.grid-cell {
+   display: flex;
+   width: 60px;
+   height: 60px;
+   border: black solid 0.5px;
+   padding: 10px;
+   background: #E96479;
+   color:#FEF5E2
+}
+
+div#content-wrapper {
+   width: 100%;
+   position: relative;
+   justify-content: space-around;
+}
+
+div#load-wrapper {
+   display: block;
+}
+
+div#details-wrapper {
+   display: flex;
+   background: #4D455D;
+   padding: 15px;
+   flex-direction: column;
+   width: 95%;
+}
+
+div#details-context {
+   display: block;
+   height: 100%;
+   width: 100%;
+   padding: 10px;
+}
+
+body {
+   margin: unset;
+}
+
+.grid-cell.container-UNUSED {
+   content-visibility: hidden;
+   background-color: #FEF5E2;
+}
+
+span.grid-content {
+   display: block;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   max-height: 100%;
+}
+
+div#transaction-wrapper {
+   display: flex;
+   justify-content: space-around;
+   width: 100%;
+}
+
+div#tab-button {
+   display: block;
+   left: 0;
+   position: relative;
+   width: fit-content;
+}
+
+button.tab-click {
+   width: 100px;
+   height: 40px;
+   margin: 10px 10px 10px 0px;
+   background-color: #7DB9B6;
+   color: #4D455D;
+   font-size: larger;
+}
+
+button.tab-click:hover {
+   background-color: #FFBF00;
+}
+
+div#counts-box {
+   display: block;
+   width: 100%;
+}
+
+div#search-box {
+   display: block;
+   margin-top: 15px
+}
+
+div#button-box {
+   display: block;
+}
+
+.count-items {
+   display: block;
+   text-align: left;
+   margin-top: 10px;
+}
+
+span.count-value {
+   padding-left: 5px;
+}
+
+.serach-container {
+   display: block;
+   text-align: left;
+   width: 100%;
+}
+
+input[type="search"] {
+   width: 75%;
+}
+
+button#search-button {
+   width: 20%;
+   background: #7DB9B6;
+}
+
+.search-element {
+   height: 30px;
+   border-radius: 4%;
+   border: unset;
+}
+
+
+/* Dropdown Content (Hidden by Default) */
+#dropdown-content {
+   text-align: left;
+   display: block;
+   position: relative;
+   background-color: #FEF5E2;
+   min-width: 230px;
+   border: 1px solid #ddd;
+   z-index: 1;
+   overflow: scroll;
+   max-height: 300px;
+ }
+ 
+ /* Links inside the dropdown */
+ #dropdown-content span {
+   color: black;
+   padding: 12px 16px;
+   text-decoration: none;
+   display: block;
+   border: black solid 0.5px;
+ }
+
+ .hidden {
+   display: none !important;
+ }
+
+div#dropdown {
+   display: block;
+   width: 100%;
+   text-align: left;
+}
+
+input#container-input {
+   width: 100%;
+   height: 40px;
+}
+
+.container-list.container-NAN, .container-list.container-UNUSED {
+   display: none !important;
+}
+
+.container-list.container-NAN, .container-list.container-UNUSED {
+   display: none !important;
+}
+
+.container-clicked {
+   background: #7DB9B6 !important;
+}
+
+.container-highlight, .list-highlight {
+   background: #FFBF00;
+}
+
+/* UNLOAD PAGE ELEMENTS */
+div#container-info-wrapper > div {
+   color: #4D455D;
+}
+
+.container-info {
+   text-align: left;
+   flex-direction: column;
+}
+
+div#container-info-wrapper {
+   display: flex;
+   width: 100%;
+   flex-direction: row;
+   flex-wrap: nowrap;
+   justify-content: start;
+   gap: 50px;
+}
+
+div#unload-contents {
+   width: auto;
+   flex-direction: column;
+   text-align: left;
+   align-items: self-start;
+}
+
+
+div#container-added-list-wrapper {
+   margin-top: 20px;
+   height: 500px;
+   width: 100%;
+   border: #4D455D solid 1px;
+   display: block;
+}
+
+.container-info.container-name-filler {
+   width: 300px;
+}
+
+input#container-typed-name {
+   width: 100%;
+}
+
+input#container-typed-weight {
+   width: 100%;
+}
+
+.container-info > span {
+   width: 100%;
+}
+
+.container-info.container-weight-filler {
+   width: 15%;
+}
+
+.container-info.container-amount-filler {
+   width: 10%;
+}
+
+input#container-typed-amount {
+   width: 100%;
+}
+button#container-submit-item {
+   background: #7DB9B6;
+   width: 100px;
+}
+
+.container-info.add-button {
+   height: 100%;
+   align-self: flex-end;
+}
+
+.container-info.container-name-filler {
+   flex-grow: 1;
+}
+
+.container-info > input {
+   height: 35px;
+   margin-top: 5px;
+}
+
+div#unload-wrapper {
+   margin-top: 10px;
+}
+
+.error {
+   border-color: #E96479;
+}
+
+ul#container-added-list {
+   display: block;
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+   max-height: 100%;
+   overflow: auto;
+}
+
+li.added-container {
+   color: black;
+   text-align: left;
+   border-bottom: 1px solid #C92C6D;
+   padding: 20px;
+   display: block;
+   position: relative;
+}
+
+button.remove-button {
+   border-radius: 100%;
+   width: 30px;
+   height: 30px;
+   background: #E96479;
+   color: #FEF5E2;
+   position: absolute;
+   right: 20px;
+   font-size: x-large;
+}
+
+.grid-cell.extra-space {
+    background: unset;
+    border: black dotted 0.5px;
+}
+
+div#buffer-grid {
+   display: grid;
+   grid-template-columns: auto auto auto auto auto;
+}
+
+.visibility-none {
+   visibility: hidden !important;
+}
+
+.removed-item {
+   content-visibility: hidden;
+   background: #FEF5E2;
+}
+
+#border_box .active-step {
+   background-color: #C92C6D;
+   content-visibility: hidden;
+}
+
+div#extra-wrapper {
+   flex-direction: column;
+   height: 100%;
+   gap: 52px;
+   flex-wrap: nowrap;
+}
+
+span#estimated-time {
+   padding-left: 10px;
+}
+
+div#step-details {
+   justify-content: space-around;
+   width: 100%;
+}
+
+div#step-info {
+   display: block;
+}
+
+div#step-wrapper {
+   justify-content: space-around;
+   flex-direction: column;
+   gap: 25px;
+}
+
+button.click-button {
+   background: #7DB9B6;
+   color: #FEF5E2;
+   width: 50px;
+   height: 50px;
+   font-size: 38px;
+   border-radius: 7px;
+}
+
+div#buttons-wrapper {
+   width: 100%;
+   justify-content: space-evenly;
+}
+
+button#pause-button {
+   border-radius: 4px;
+   width: 100px;
+   margin-top: 30px;
+   height: 40px;
+   color: #FEF5E2;
+   background-color: #E96479;
+}
+
+button#step-complete-button {
+   border-radius: 4px;
+   width: 180px;
+   margin-top: 30px;
+   height: 40px;
+   color: #FEF5E2;
+   background-color: #7DB9B6;
+}
+
+div#proccess-complete-wrapper {
+   min-height: 40px;
+   margin-top: 20px;
+}
+
+button#proccess-complete-button {
+   height: 40px;
+   width: 300px;
+   background: green;
+   color: #FEF5E2;
+}
+
+/* LOG CSS */
+div#log-box, div#log-out-box, div#process-done-box {
+   display: block;
+   height: 100%;
+   width: 100%;
+   position: absolute;
+   top: 0;
+   left: 0;
+}
+
+div#shadow-box, div#shadow-out-box, div#shadow-process-box {
+   width: 100%;
+   height: 100%;
+   background: #4D455D;
+   opacity: 0.5;
+   position: absolute;
+   z-index: 2;
+}
+
+div#log-entry-wrapper, div#log-out-wrapper, div#process-wrapper {
+   position: absolute;
+   height: 300px;
+   width: 500px;
+   z-index: 3;
+   top: 25%;
+   left: 35%;
+   background: #4D455D;
+   flex-direction: column;
+}
+
+#log-entry {
+   height: 100%;
+   width: 85%;
+   background: #FEF5E2 no-repeat;
+   border-radius: 4px;
+   padding: 10px;
+}
+
+button#submit-log {
+   background: green;
+   margin: 20px;
+   color: #FEF5E2;
+}
+
+button#submit-log {
+   height: 60px;
+   width: 80px;
+   border-radius: 4px;
+}
+
+span#log-close-button {
+   display: block;
+   position: absolute;
+   right: 15px;
+   top: 10px;
+   background: #E96479;
+   border-radius: 100%;
+   padding-bottom: 2px;
+   width: 25px;
+   height: 25px;
+}
+
+button#log-button {
+   border-radius: 4px;
+   width: 180px;
+   height: 40px;
+   color: #4D455D;
+   background-color: #FFBF00;
+}
+
+.pop-up {
+   z-index: 2;
+   position: absolute;
+   top: 50px;
+   background: #FFBF00;
+   width: 450px;
+   height: 50px;
+   color: #4D455D;
+   left: 30%;
+   border: 1px solid #4D455D;
+   border-radius: 4px;
+}
+
+.pop-up-error {
+   position: absolute;
+   top: 50px;
+   background: #FFBF00;
+   width: 450px;
+   height: 50px;
+   color: #4D455D;
+   left: 30%;
+   border: 4px solid red !important;
+   border-radius: 4px;
+}
+/* LOG CSS */
+
+div#shadow-out-box, div#shadow-process-box {
+   opacity: 1;
+}
+
+.click_button {
+    height: 40px;
+    width: 80px;
+    background-color: #7DB9B6;
+    border-radius: 10%;
+    border-color: unset;
+}
+
+div#login_button {
+   margin-top: 25px;
+}
+
+.toggle-logout-button{
+   background: #E96479;
+   color: #FEF5E2;
+   border-radius: 4px;
+   height: 40px;
+   width: 100px;
+}
+
+h1#process-header {
+   color: green;
+   font-size: xxx-large;
+}
+
+h2#reminder-header {
+   color: red;
+   font-size: x-large;
+   white-space: nowrap;
+}
+
+a#new-login {
+   margin-bottom: 20px;
+}
+
+button.decide-button {
+   width: 150px;
+   height: 40px;
+}
+
+.grid-cell.extra-space.grid-buffer.grid-truck {
+   color: #4D455D;
+}
+
+
+#border_box .active-step.final-loc {
+   background-color: #7DB9B6;
+   content-visibility: hidden;
+}

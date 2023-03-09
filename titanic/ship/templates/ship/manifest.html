@@ -1,0 +1,25 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'ship/index/style.css' %}">
+
+<div id="main_box">
+    <div id="border_box">
+        <form enctype="multipart/form-data" action="{% url 'ship:upload' userid %}" method="post">
+            {% csrf_token %}
+            <h2 id="welcome">Welcome</h2>
+            <h2>{{ operator_name }}</h2>
+            <fieldset>
+                <legend><h3>Enter the name of the ship</h3></legend>
+                    <input type="text" name="ship_name" id="ship_name" value="{{ ship_name }}">
+                    <legend><h2>Please Upload The Manifest File</h2></legend>
+                    <div id="upload_button">
+                    <input type="file" name="manifest" id="manifest_file_button" value="Upload" class="click_button" hidden>
+                    <label for="manifest_file_button" class="click_button">Upload</label>
+                    </div>
+            </fieldset>
+            <div id="done_button">
+                <input type="submit" value="Done" class="click_button">
+            </div>
+        </form>
+    </div>
+</div>
