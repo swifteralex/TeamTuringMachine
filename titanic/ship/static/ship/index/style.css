@@ -33,7 +33,7 @@ div {
 }
 
 #border_box {
-    background-color: #F5E9CF;
+    background-color: #FEF5E2;
     border-color: whitewhitemoke;
     display: block;
     border-style: solid;
@@ -97,7 +97,7 @@ label[for="manifest_file_button"] {
     display: flex;
     align-items: center;
     background-color: #C92C6D;
-    color: #F5E9CF;
+    color: #FEF5E2;
     justify-content: center;
 }
 
@@ -148,3 +148,11 @@ a.click_button.transaction_button {
     width: 40%;
     margin-top: 15px;
 }
+
+.toggle-logout-button{
+    background: #E96479;
+    color: #FEF5E2;
+    border-radius: 4px;
+    height: 40px;
+    width: 100px;
+ }

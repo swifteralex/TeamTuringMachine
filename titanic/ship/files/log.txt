@@ -1,0 +1,15 @@
+$[06/03/2023 23:37:59]: "Dog" is unloaded.
+$[06/03/2023 23:37:59]: "test" is loaded.
+$[06/03/2023 23:38:00]: "Cat" is unloaded.
+$[06/03/2023 23:46:02]: "test" is loaded.
+$[07/03/2023 01:50:07]: Deniz Deniz signs out
+$[07/03/2023 01:50:09]: Alex Turing signs in
+$[07/03/2023 01:50:11]: Alex Turing signs out
+$[07/03/2023 01:50:14]: Deniz Turing signs in
+$[07/03/2023 01:50:51]: Manifest file for the ship "tutorial" has been uploaded
+$[08/03/2023 19:31:59]: Deniz Turing signs in
+$[08/03/2023 19:32:20]: Manifest file for the ship "titanic 2" has been uploaded
+$[08/03/2023 19:36:18]: Manifest file for the ship "katamaran" has been uploaded
+$[08/03/2023 19:40:58]: log test
+$[08/03/2023 19:41:03]: Deniz Turing signs out
+$[08/03/2023 20:01:15]: "Dog" is unloaded.

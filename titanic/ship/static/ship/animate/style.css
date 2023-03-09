@@ -74,7 +74,7 @@ html * {
     color: #FEF5E2
 }
 
-.grid-cell.cell-NAN {
+.grid-cell.container-NAN {
    background-color: #4D455D;
    content-visibility: hidden;
 }
@@ -106,11 +106,10 @@ div#load-wrapper {
 
 div#details-wrapper {
    display: flex;
-   height: 500px;
-   width: 350px;
    background: #4D455D;
    padding: 15px;
    flex-direction: column;
+   width: 95%;
 }
 
 div#details-context {
@@ -124,7 +123,7 @@ body {
    margin: unset;
 }
 
-.grid-cell.cell-UNUSED {
+.grid-cell.container-UNUSED {
    content-visibility: hidden;
    background-color: #FEF5E2;
 }
@@ -137,8 +136,9 @@ span.grid-content {
 }
 
 div#transaction-wrapper {
-   display: block;
-   max-width: 70%;
+   display: flex;
+   justify-content: space-around;
+   width: 100%;
 }
 
 div#tab-button {
@@ -260,10 +260,6 @@ input#container-input {
    background: #FFBF00;
 }
 
-button:hover, .grid-cell:not(.cell-NAN, .grid-cell.cell-UNUSED):hover, span.container-list:hover {
-   cursor: pointer;
-}
-
 /* UNLOAD PAGE ELEMENTS */
 div#container-info-wrapper > div {
    color: #4D455D;
@@ -382,16 +378,102 @@ button.remove-button {
    font-size: x-large;
 }
 
-button#start-process {
+.grid-cell.extra-space {
+    background: unset;
+    border: black dotted 0.5px;
+}
+
+div#buffer-grid {
+   display: grid;
+   grid-template-columns: auto auto auto auto auto;
+}
+
+.visibility-none {
+   visibility: hidden !important;
+}
+
+.removed-item {
+   content-visibility: hidden;
+   background: #FEF5E2;
+}
+
+#border_box .active-step {
+   background-color: #C92C6D;
+   content-visibility: hidden;
+}
+
+div#extra-wrapper {
+   flex-direction: column;
+   height: 100%;
+   gap: 52px;
+   flex-wrap: nowrap;
+}
+
+span#estimated-time {
+   padding-left: 10px;
+}
+
+div#step-details {
+   justify-content: space-around;
+   width: 100%;
+}
+
+div#step-info {
+   display: block;
+}
+
+div#step-wrapper {
+   justify-content: space-around;
+   flex-direction: column;
+   gap: 25px;
+}
+
+button.click-button {
    background: #7DB9B6;
    color: #FEF5E2;
-   height: 40px;
-   width: 170px;
+   width: 50px;
+   height: 50px;
+   font-size: 38px;
+   border-radius: 7px;
+}
+
+div#buttons-wrapper {
+   width: 100%;
+   justify-content: space-evenly;
+}
+
+button#pause-button {
    border-radius: 4px;
+   width: 100px;
+   margin-top: 30px;
+   height: 40px;
+   color: #FEF5E2;
+   background-color: #E96479;
+}
+
+button#step-complete-button {
+   border-radius: 4px;
+   width: 180px;
+   margin-top: 30px;
+   height: 40px;
+   color: #FEF5E2;
+   background-color: #7DB9B6;
+}
+
+div#proccess-complete-wrapper {
+   min-height: 40px;
+   margin-top: 20px;
+}
+
+button#proccess-complete-button {
+   height: 40px;
+   width: 300px;
+   background: green;
+   color: #FEF5E2;
 }
 
 /* LOG CSS */
-div#log-box, div#log-out-box {
+div#log-box, div#log-out-box, div#process-done-box {
    display: block;
    height: 100%;
    width: 100%;
@@ -400,7 +482,7 @@ div#log-box, div#log-out-box {
    left: 0;
 }
 
-div#shadow-box, div#shadow-out-box {
+div#shadow-box, div#shadow-out-box, div#shadow-process-box {
    width: 100%;
    height: 100%;
    background: #4D455D;
@@ -409,7 +491,7 @@ div#shadow-box, div#shadow-out-box {
    z-index: 2;
 }
 
-div#log-entry-wrapper, div#log-out-wrapper {
+div#log-entry-wrapper, div#log-out-wrapper, div#process-wrapper {
    position: absolute;
    height: 300px;
    width: 500px;
@@ -486,7 +568,7 @@ button#log-button {
 }
 /* LOG CSS */
 
-div#shadow-out-box {
+div#shadow-out-box, div#shadow-process-box {
    opacity: 1;
 }
 
@@ -508,4 +590,34 @@ div#login_button {
    border-radius: 4px;
    height: 40px;
    width: 100px;
+}
+
+h1#process-header {
+   color: green;
+   font-size: xxx-large;
+}
+
+h2#reminder-header {
+   color: red;
+   font-size: x-large;
+   white-space: nowrap;
+}
+
+a#new-login {
+   margin-bottom: 20px;
+}
+
+button.decide-button {
+   width: 150px;
+   height: 40px;
+}
+
+.grid-cell.extra-space.grid-buffer.grid-truck {
+   color: #4D455D;
+}
+
+
+#border_box .active-step.final-loc {
+   background-color: #7DB9B6;
+   content-visibility: hidden;
 }
