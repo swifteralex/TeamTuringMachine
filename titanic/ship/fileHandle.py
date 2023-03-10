@@ -6,7 +6,8 @@ from datetime import datetime
 filePaths = {
     'manifest': "ship/files/manifest.txt",
     'log': "ship/files/log.txt",
-    'outbound': "ship/files/outbound.txt"
+    'outbound': "ship/files/outbound.txt",
+    'test': os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop') 
 }
 
 def handle_uploaded_file(f):
@@ -44,8 +45,9 @@ def enter_log(textToSubmit):
         
     
 
-def prepare_outbound_manifest(containerList):
+def prepare_outbound_manifest(containerList, shipname):
     sorted(containerList, key=lambda x: (int(x["containerPos"][0]), int(x["containerPos"][1])))
+    currentDestination = filePaths["test"] + "/" + shipname.replace(" ", "") + "outbound.txt"
     
     for container in containerList:
         posX = f'{int(container["containerPos"][0]):02d}'
@@ -56,5 +58,5 @@ def prepare_outbound_manifest(containerList):
         
         textToWrite = (", ").join([position, weight, containerName]) + "\n"
         
-        with open(filePaths["outbound"], 'a') as outbound:
+        with open(currentDestination, 'a') as outbound:
             outbound.write(textToWrite)

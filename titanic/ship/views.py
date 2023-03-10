@@ -211,6 +211,6 @@ def finalize(request, shipid):
     if request.method == 'POST':
         finalList = json.loads(request.POST['finalList'])["containers"]
 
-    prepare_outbound_manifest(finalList)
+    prepare_outbound_manifest(finalList, get_object_or_404(ShipName, id=shipid).ship_name)
     
     return JsonResponse("success", safe=False)
