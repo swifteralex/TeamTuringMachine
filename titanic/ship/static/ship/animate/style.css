@@ -378,7 +378,7 @@ button.remove-button {
    font-size: x-large;
 }
 
-.grid-cell.extra-space {
+.grid-cell.extra-space:not(.recently-added) {
     background: unset;
     border: black dotted 0.5px;
 }
@@ -405,7 +405,7 @@ div#buffer-grid {
 div#extra-wrapper {
    flex-direction: column;
    height: 100%;
-   gap: 52px;
+   gap: 40px;
    flex-wrap: nowrap;
 }
 

@@ -2,10 +2,13 @@
 var allActions = [];
 var statesPerStep = [];
 var timeSetList = []
+var isProcessFinished = false;
+var shipid;
 var animateCounter = 0;
 var totalStepCount;
 var currentInterval;
 var initialPage;
+let containerWeightDict;
 
 //Help from: https://docs.djangoproject.com/en/4.0/ref/csrf/#:%7E:text=Setting%20the%20token%20on%20the%20AJAX%20request¶
 function getCookie(name) {
@@ -52,42 +55,80 @@ function checkContainerExist(element){
   return !element.classList.contains("extra-space") && !element.classList.contains("container-UNUSED") && !element.classList.contains("container-NAN");
 }
 
-function prepData(listOfSteps, timeSet) {
+function prepData(listOfSteps, timeSet, currentShipId, isBalance) {
+  let isBalanceAction = isBalance === "True" ? true : false;
+  shipid = currentShipId
   totalStepCount = listOfSteps.length
   document.getElementById("total-step").textContent = totalStepCount;
   document.getElementById("estimated-time").textContent = getFixedTime(timeSet[0]);
   timeSetList = timeSet
+  containerWeightDict = JSON.parse((document.getElementById("hidden-load-weights") || {}).value || '{}');
   initialPage =  document.getElementById("transaction-wrapper").innerHTML;
   allActions = listOfSteps;
   
-  let countUnloads = 1;
-  let containerName = "", containerPos = [];
+  let containerName = ""
+  let containerPos = [];
+  let prevContainerName = "";
+  let prevContainerWeight;
+  let bufferCount = 0;
 
-  for (let i = 0; i < allActions.length; i++) {   
+  for (let i = 0; i < allActions.length; i++) {
+    let actualStep = i + 1;
+    let continuedAction = allActions[i + 1];
     let isSkip = true; 
     let tempActionlist = allActions[i];
     let listLength = tempActionlist.length - 1;
     let isLoad = isLoadAction(tempActionlist[0]);
+    let isDropOff = !isLoad && !isBalanceAction &&
+                    continuedAction[continuedAction.length - 1][0] === 0 && 
+                    continuedAction[continuedAction.length - 1][1] === 0;
+
 
     if(isLoad) {
         containerName = tempActionlist[0];
         containerPos = tempActionlist[listLength];
+        containerWeight = containerWeightDict[containerName];
         isSkip = false;
     } else {
-      if (countUnloads % 2 === 1) {
         let itemPosition = tempActionlist[listLength];
         let row = itemPosition[0];
         let column = itemPosition[1];
+        let currentContainer = document.querySelector("[row='" + row + "'][column='" + column + "']");
 
-        containerName = document.querySelector("[row='" + row + "'][column='" + column + "']").textContent.trim();
+        containerName = currentContainer.textContent.trim();
+        containerWeight = currentContainer.getAttribute('weight');
         containerPos = itemPosition;
         isSkip = false;
+        
+        i += 1
+
+        containerOtherObject = {
+          isSkip: isDropOff, 
+          containerName: containerName,
+          containerWeight: containerWeight,
+          containerPos: [continuedAction[continuedAction.length - 1][0], continuedAction[continuedAction.length - 1][1]],
+          step: i + 1, 
+          isLoad: true
+        }
       }
-      
-      countUnloads += 1;
+
+    containerObject = {
+      isSkip: isSkip, 
+      containerName: containerName,
+      containerWeight: containerWeight,
+      containerPos: containerPos,
+      step: actualStep, 
+      isLoad: isLoad
     }
-  
-      statesPerStep.push({isSkip: isSkip, containerName: containerName, containerPos: containerPos, step: i + 1, isLoad: isLoad});
+
+    statesPerStep.push(containerObject);
+    
+    if(!isLoad) {
+      statesPerStep.push(containerOtherObject);
+    }
+
+
+    startClear(i + 1);
   }
 
   initAnimate(0);
@@ -146,10 +187,8 @@ function startClear(step){
   document.getElementById("current-step").textContent = currentStep;
   document.getElementById("estimated-time").textContent = currentTime;
 
-  if(step + 1 === totalStepCount){
+  if(isProcessFinished){
     document.getElementById("proccess-complete-button").classList.remove("hidden");
-  } else {
-    document.getElementById("proccess-complete-button").classList.add("hidden");
   }
 
   for (let i = 0; i < step; i++) {
@@ -160,19 +199,24 @@ function startClear(step){
       let isLoad = currentStep["isLoad"];
       let position = currentStep["containerPos"];
       let containerName = currentStep["containerName"];
+      let containerWeight = currentStep["containerWeight"];
 
       element = document.querySelector("[row='" + position[0] + "'][column='" + position[1] + "']");
 
       if(isLoad){
-        element.innerText = containerName;
+        element.getElementsByClassName("grid-content")[0].innerText = containerName;
         element.classList.add("container-" + containerName);
-        element.classList.remove("container-UNUSED")
+        element.classList.remove("container-UNUSED");
+        element.classList.remove("recently-removed");
         element.classList.add("recently-added");
+        element.setAttribute("weight", containerWeight);
       } else {
-        element.getElementsByClassName("grid-content").textContent = "UNUSED";
-        element.classList.remove("container-" + containerName)
+        element.getElementsByClassName("grid-content")[0].innerText = "UNUSED";
+        element.classList.remove("container-" + containerName);
+        element.classList.remove("recently-added");
         element.classList.add("container-UNUSED")
         element.classList.add("recently-removed");
+        element.removeAttribute("weight");
       }
     }
   }
@@ -227,16 +271,17 @@ function toggleLog(element){
   }
 }
 
-function toggleProcess(shipid){
+function toggleProcess(){
   document.getElementById("process-done-box").classList.remove("hidden");
 
-  getFinalContent(shipid);
+  getFinalContent();
 }
 
-function getFinalContent(shipid){
+function getFinalContent(){
   clearInterval(currentInterval);
+
   let finalContainerList = [];
-  let containerWeightDict = JSON.parse((document.getElementById("hidden-load-weights") || {}).value || '{}');
+
 
   for (let i = 0; i < 8; i++) {
     for (let k = 0; k < 12; k++) {
@@ -268,14 +313,21 @@ function getFinalContent(shipid){
 }
 
 function containerDone(){
-  currentStep = parseInt(document.getElementById("current-step").textContent.trim());
-  currentStep = statesPerStep[currentStep - 1]
-  isLoad = currentStep['isLoad'];
+  let currentStep = parseInt(document.getElementById("current-step").textContent.trim());
+  let currentContainer = statesPerStep[currentStep - 1]
+  isLoad = currentContainer['isLoad'];
 
-  if((!isLoad && currentStep['isSkip']) || isLoad){
-    logText = "\"" + currentStep['containerName'] + "\" is " + (isLoad ? "loaded." : "unloaded.");
+  if(isLoad){
+    logText = "\"" + currentContainer['containerName'] + "\" is " + (isLoad ? "loaded." : "unloaded.");
 
     sendLog(logText);
+  }
+
+  if(currentStep === totalStepCount) {
+    document.getElementById("proccess-complete-button").classList.remove("hidden");
+    isProcessFinished = true;
+    clearInterval(currentInterval);
+    startClear(totalStepCount);
   }
 
   changeStep(true);
@@ -329,7 +381,7 @@ function toggleLogOutBox() {
 }
 
 
-function logOut(shipid){
+function logOut(){
   op_name = document.getElementById('op_first').value
   op_lastname = document.getElementById('op_last').value
   targetUrl =  '/ship/' + shipid + '/logoutAnimate/'
@@ -359,8 +411,4 @@ function logOut(shipid){
       setTimeout(() => {document.getElementsByClassName("pop-up")[0].remove()}, 2500);
     }
   });
-}
-
-function togglePorccessComplete() {
-  
 }
