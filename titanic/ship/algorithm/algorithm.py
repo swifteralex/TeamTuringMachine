@@ -92,6 +92,8 @@ def read_manifest(filepath):  # Takes in a manifest file and returns a State obj
         new_row = [None]
         for j in range(0, 12):
             line = manifest.readline()
+            if line == "\n":
+                line = manifest.readline()
             name = line[18:].strip()
             if name != "NAN":
                 if name != "UNUSED":

@@ -23,6 +23,8 @@ def create_file_index():
     
     with open(filePaths["manifest"], "r") as manifest:
         for line in manifest.readlines():
+            if line == "\n":
+                continue
             coordinates = re.findall(r'\[.*?\]', line)[0].replace("[", "").replace("]", "").split(",")
             coordinateTuple = (int(coordinates[0]), int(coordinates[1]))
             weight = int(re.findall(r'\{.*?\}', line)[0].replace("{", "").replace("}", ""))
