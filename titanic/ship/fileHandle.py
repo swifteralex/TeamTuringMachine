@@ -54,8 +54,8 @@ def prepare_outbound_manifest(containerList, shipname):
     for container in containerList:
         posX = f'{int(container["containerPos"][0]):02d}'
         posY = f'{int(container["containerPos"][1]):02d}'
-        position = "[{}, {}]".format(posX,posY)
-        weight = "{" + f'{int(container["weight"]):04d}' + "}"
+        position = "[{},{}]".format(posX,posY)
+        weight = "{" + f'{int(container["weight"]):05d}' + "}"
         containerName = container["containerName"]
         
         textToWrite = (", ").join([position, weight, containerName]) + "\n"
