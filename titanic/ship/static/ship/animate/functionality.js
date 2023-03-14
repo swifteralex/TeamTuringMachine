@@ -152,11 +152,11 @@ function toggleAnimation(currentActionList, containerName, step){
 
   animateCounter += 1;
 
-  if (animateCounter >= currentActionList.length) {
-    togglePause();
+  if (animateCounter >= currentActionList.length - 2) {
     currentElement.classList.add("final-loc");
+  }
+  if (animateCounter >= currentActionList.length) {
     animateCounter = 0;
-    setTimeout(togglePause, 2000);
   }
 }
 
@@ -173,6 +173,8 @@ function initAnimate(step) {
   animateCounter = 0;
 
   startClear(step);
+  currentActionList.push({ ...currentActionList[currentActionList.length - 1] });
+  currentActionList.push({ ...currentActionList[currentActionList.length - 1] });
   currentInterval = setInterval(toggleAnimation, 500, currentActionList, itemName, step);
 }
 
