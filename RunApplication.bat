@@ -4,6 +4,9 @@ ECHO Starting virtual environment...
 cd django-env-win/Scripts
 call activate.bat
 
+ECHO Ensuring pip is installed...
+py -m ensurepip
+
 ECHO Installing Django...
 py -m pip install Django
 
