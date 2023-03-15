@@ -621,3 +621,9 @@ button.decide-button {
    background-color: #7DB9B6;
    content-visibility: hidden;
 }
+
+
+#border_box .active-step.empty-crane {
+   background-color: #BBBBBB;
+   content-visibility: hidden;
+}

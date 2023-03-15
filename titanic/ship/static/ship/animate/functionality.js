@@ -8,6 +8,7 @@ var animateCounter = 0;
 var totalStepCount;
 var currentInterval;
 var initialPage;
+var emptyCrane = false;
 let containerWeightDict;
 
 //Help from: https://docs.djangoproject.com/en/4.0/ref/csrf/#:%7E:text=Setting%20the%20token%20on%20the%20AJAX%20request¶
@@ -138,7 +139,7 @@ function isLoadAction(item){
   return typeof item === 'string' || item instanceof String;
 }
 
-function toggleAnimation(currentActionList, containerName, step){
+function toggleAnimation(currentActionList, containerName, step, empty){
   let currentAction = currentActionList[animateCounter];
 
   currentAction = isLoadAction(currentAction) ? [0, 0] : currentAction;
@@ -154,6 +155,8 @@ function toggleAnimation(currentActionList, containerName, step){
 
   if (animateCounter >= currentActionList.length - 2) {
     currentElement.classList.add("final-loc");
+  } else if (empty) {
+    currentElement.classList.add("empty-crane");
   }
   if (animateCounter >= currentActionList.length) {
     animateCounter = 0;
@@ -165,17 +168,19 @@ function initAnimate(step) {
   let firstItem = currentActionList[0];
   let itemName = "";
 
-  if (isLoadAction(firstItem)) {
+  loadAction = isLoadAction(firstItem);
+  if (loadAction) {
     itemName = firstItem;
     currentActionList[0] = [0, 0];
   }
   
   animateCounter = 0;
+  emptyCrane = loadAction ? false : !emptyCrane;
 
   startClear(step);
   currentActionList.push({ ...currentActionList[currentActionList.length - 1] });
   currentActionList.push({ ...currentActionList[currentActionList.length - 1] });
-  currentInterval = setInterval(toggleAnimation, 500, currentActionList, itemName, step);
+  currentInterval = setInterval(toggleAnimation, 500, currentActionList, itemName, step, emptyCrane);
 }
 
 function startClear(step){
@@ -226,10 +231,15 @@ function startClear(step){
 
 function clearActiveStep() {
   activeSteps = document.getElementsByClassName("active-step");
-  let finalLoc = document.getElementsByClassName("final-loc")[0]
+  finalLoc = document.getElementsByClassName("final-loc");
+  empty = document.getElementsByClassName("empty-crane");
 
-  if (finalLoc != undefined) {
-    finalLoc.classList.remove("final-loc");
+  for (let i = 0; i < finalLoc.length; i++) {
+    finalLoc[i].classList.remove("final-loc");
+  }
+
+  for (let i = 0; i < empty.length; i++) {
+    empty[i].classList.remove("empty-crane");
   }
 
   for (let i = 0; i < activeSteps.length; i++) {
