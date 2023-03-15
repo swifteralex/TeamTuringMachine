@@ -156,6 +156,10 @@ def animate(request, userid, shipid):
         unloadListValues = unloadVals.split('./.')
         unloadCoordinates = []
         print(loadListValues, unloadListValues)
+
+        if unloadListValues == ['']:
+            unloadListValues = []
+
         for unloadValue in unloadListValues:
             values = unloadValue.split(',')
             unloadCoordinates.append((int(values[0]), int(values[1])))
@@ -179,6 +183,8 @@ def animate(request, userid, shipid):
                 newList.append(item)
                 
         newActionSequence.append(newList)
+
+    print(newActionSequence)
 
     containers, containerNames = create_file_index()
     operator = string.capwords(get_object_or_404(Operator, id=userid).operator_text)
