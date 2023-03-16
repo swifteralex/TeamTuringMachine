@@ -6,4 +6,4 @@ python3 -m pip install Django
 
 cd ./titanic
 
-python manage.py runserver
+python3 manage.py runserver

@@ -207,23 +207,26 @@ function startClear(step){
       let position = currentStep["containerPos"];
       let containerName = currentStep["containerName"];
       let containerWeight = currentStep["containerWeight"];
+      let isFromTruck = position[0] === 0 && position[1] === 0;
 
       element = document.querySelector("[row='" + position[0] + "'][column='" + position[1] + "']");
 
       if(isLoad){
-        element.getElementsByClassName("grid-content")[0].innerText = containerName;
+        element.getElementsByClassName("grid-content")[0].textContent = containerName;
         element.classList.add("container-" + containerName);
         element.classList.remove("container-UNUSED");
         element.classList.remove("recently-removed");
         element.classList.add("recently-added");
         element.setAttribute("weight", containerWeight);
       } else {
-        element.getElementsByClassName("grid-content")[0].innerText = "UNUSED";
-        element.classList.remove("container-" + containerName);
-        element.classList.remove("recently-added");
-        element.classList.add("container-UNUSED")
-        element.classList.add("recently-removed");
-        element.removeAttribute("weight");
+        if(!isFromTruck) {
+          element.getElementsByClassName("grid-content")[0].textContent = "UNUSED";
+          element.classList.remove("container-" + containerName);
+          element.classList.remove("recently-added");
+          element.classList.add("container-UNUSED")
+          element.classList.add("recently-removed");
+          element.removeAttribute("weight");
+        }
       }
     }
   }

@@ -59,3 +59,7 @@ $[09/03/2023 18:31:11]: Alex Beepboop signs out
 $[09/03/2023 18:31:18]: Alex Turing signs in
 $[09/03/2023 18:31:24]: Manifest file for the ship "test" has been uploaded
 $[09/03/2023 18:32:07]: "CONTAINER" is loaded.
+$[09/03/2023 19:16:49]: Manifest file for the ship "asdasd" has been uploaded
+$[09/03/2023 19:17:11]: "alex" is loaded.
+$[15/03/2023 17:21:32]: Deniz Turing signs in
+$[15/03/2023 17:22:29]: Manifest file for the ship "titanic" has been uploaded
