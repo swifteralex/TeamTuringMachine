@@ -74,3 +74,18 @@ $[15/03/2023 18:04:21]: "CONTAINER4" is loaded.
 $[15/03/2023 18:04:22]: "CONTAINER2" is loaded.
 $[15/03/2023 18:04:23]: "CONTAINER4" is loaded.
 $[15/03/2023 18:04:24]: Deniz Turing signs out
+$[15/03/2023 18:13:25]: Deniz Deniz signs in
+$[15/03/2023 18:13:33]: Manifest file for the ship "titanic" has been uploaded
+$[15/03/2023 18:13:52]: Manifest file for the ship "titanic" has been uploaded
+$[15/03/2023 18:44:08]: "test" is loaded.
+$[15/03/2023 18:44:42]: Manifest file for the ship "testship" has been uploaded
+$[15/03/2023 18:46:05]: "UCR-Books" is loaded.
+$[15/03/2023 18:52:38]: Manifest file for the ship "testship" has been uploaded
+$[15/03/2023 18:56:24]: Deniz Turing signs in
+$[15/03/2023 18:56:35]: Manifest file for the ship "titanic2" has been uploaded
+$[15/03/2023 18:58:09]: Deniz Turing signs in
+$[15/03/2023 18:58:14]: Manifest file for the ship "titanic" has been uploaded
+$[15/03/2023 19:50:36]: "CONTAINER4" is loaded.
+$[15/03/2023 19:50:56]: Manifest file for the ship "test2" has been uploaded
+$[15/03/2023 19:51:43]: "test" is loaded.
+$[15/03/2023 19:52:11]: "test" is loaded.

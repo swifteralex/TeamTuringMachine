@@ -76,42 +76,48 @@ function prepData(listOfSteps, timeSet, currentShipId, isBalance) {
   for (let i = 0; i < allActions.length; i++) {
     let actualStep = i + 1;
     let continuedAction = allActions[i + 1];
-    let isSkip = true; 
+    let isSkip = true;
+    let containerWeight = 0;
+    let containerName = "UNUSED";
+    let containerPos = [0, 0];
     let tempActionlist = allActions[i];
     let listLength = tempActionlist.length - 1;
     let isLoad = isLoadAction(tempActionlist[0]);
     let isDropOff = !isLoad && !isBalanceAction &&
                     continuedAction[continuedAction.length - 1][0] === 0 && 
                     continuedAction[continuedAction.length - 1][1] === 0;
+    let isEmptyMove = !isDropOff && !isLoad && tempActionlist[tempActionlist.length - 1][0] === 0 && tempActionlist[tempActionlist.length - 1][1] === 0;
 
 
-    if(isLoad) {
-        containerName = tempActionlist[0];
-        containerPos = tempActionlist[listLength];
-        containerWeight = containerWeightDict[containerName];
-        isSkip = false;
-    } else {
-        let itemPosition = tempActionlist[listLength];
-        let row = itemPosition[0];
-        let column = itemPosition[1];
-        let currentContainer = document.querySelector("[row='" + row + "'][column='" + column + "']");
+    if(!isEmptyMove){
+      if(isLoad) {
+          containerName = tempActionlist[0];
+          containerPos = tempActionlist[listLength];
+          containerWeight = containerWeightDict[containerName];
+          isSkip = false;
+      } else {
+          let itemPosition = tempActionlist[listLength];
+          let row = itemPosition[0];
+          let column = itemPosition[1];
+          let currentContainer = document.querySelector("[row='" + row + "'][column='" + column + "']");
 
-        containerName = currentContainer.textContent.trim();
-        containerWeight = currentContainer.getAttribute('weight');
-        containerPos = itemPosition;
-        isSkip = false;
-        
-        i += 1
+          containerName = currentContainer.textContent.trim();
+          containerWeight = currentContainer.getAttribute('weight');
+          containerPos = itemPosition;
+          isSkip = false;
+          
+          i += 1
 
-        containerOtherObject = {
-          isSkip: isDropOff, 
-          containerName: containerName,
-          containerWeight: containerWeight,
-          containerPos: [continuedAction[continuedAction.length - 1][0], continuedAction[continuedAction.length - 1][1]],
-          step: i + 1, 
-          isLoad: true
+          containerOtherObject = {
+            isSkip: isDropOff, 
+            containerName: containerName,
+            containerWeight: containerWeight,
+            containerPos: [continuedAction[continuedAction.length - 1][0], continuedAction[continuedAction.length - 1][1]],
+            step: i + 1, 
+            isLoad: true
+          }
         }
-      }
+    }
 
     containerObject = {
       isSkip: isSkip, 
@@ -121,13 +127,13 @@ function prepData(listOfSteps, timeSet, currentShipId, isBalance) {
       step: actualStep, 
       isLoad: isLoad
     }
+  
 
     statesPerStep.push(containerObject);
     
-    if(!isLoad) {
+    if(!isLoad && !isEmptyMove) {
       statesPerStep.push(containerOtherObject);
     }
-
 
     startClear(i + 1);
   }
@@ -169,6 +175,7 @@ function initAnimate(step) {
   let itemName = "";
 
   loadAction = isLoadAction(firstItem);
+
   if (loadAction) {
     itemName = firstItem;
     currentActionList[0] = [0, 0];
@@ -198,7 +205,7 @@ function startClear(step){
     document.getElementById("proccess-complete-button").classList.remove("hidden");
   }
 
-  for (let i = 0; i < step; i++) {
+  for (let i = 0; i < step && i < statesPerStep.length; i++) {
     let currentStep = statesPerStep[i];
     let isSkip = currentStep["isSkip"];
 
