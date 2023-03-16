@@ -61,7 +61,7 @@
             <h1 id="process-header">Process Successful!</h1>
             <h2 id="reminder-header">Don't forget to email the outbound manifest to the captain</h2>
             <h3> What would you like to do next?</h3>
-            <a href="{% url 'ship:index'%}" id="new-login">
+            <a onclick="sendLogoutMessage();" href="{% url 'ship:index'%}" id="new-login">
                 <button class="decide-button logout-button">Logout</button>
             </a>
             <a href="{% url 'ship:manifest' userid %}" id="new-manifest">

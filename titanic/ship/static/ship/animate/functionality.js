@@ -388,13 +388,15 @@ function sendLog(logText){
 }
 
 function toggleLogOutBox() {
-    document.getElementById("log-out-box").classList.toggle("hidden")
-
-    logText = document.getElementById("operator-name-tag").textContent + " signs out"
-
-    sendLog(logText)
+    document.getElementById("log-out-box").classList.toggle("hidden");
+    sendLogoutMessage();
 }
 
+function sendLogoutMessage(){
+  logText = document.getElementById("operator-name-tag").textContent + " signs out"
+
+  sendLog(logText)
+}
 
 function logOut(){
   op_name = document.getElementById('op_first').value
