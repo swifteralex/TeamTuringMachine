@@ -260,7 +260,7 @@ def load_unload(manifest, loads, unloads):
                     beginning_move = (9, 1)
                 else:
                     beginning_move = move_set[-1][-1]
-                empty_moves = __interpolate(state_c, beginning_move, moves[0])
+                empty_moves = __interpolate(state_c, beginning_move, moves[0], container_to_grab=moves[0])
                 if empty_moves:
                     move_set.append(empty_moves)
                 move_set.append(moves)
@@ -289,7 +289,7 @@ def load_unload(manifest, loads, unloads):
                         beginning_move = (9, 1)
                     else:
                         beginning_move = move_set[-1][-1]
-                    empty_moves = __interpolate(state_c, beginning_move, best_move[0])
+                    empty_moves = __interpolate(state_c, beginning_move, best_move[0], container_to_grab=best_move[0])
                     if empty_moves:
                         move_set.append(empty_moves)
                     move_set.append(best_move)
@@ -317,7 +317,7 @@ def load_unload(manifest, loads, unloads):
                     beginning_move = (9, 1)
                 else:
                     beginning_move = move_set[-1][-1]
-                empty_moves = __interpolate(state_c, beginning_move, best_move[0])
+                empty_moves = __interpolate(state_c, beginning_move, best_move[0], container_to_grab=best_move[0])
                 if empty_moves:
                     move_set.append(empty_moves)
                 move_set.append(best_move)
@@ -422,7 +422,7 @@ def __sift(state):
             beginning_move = (9, 1)
         else:
             beginning_move = move_set[-1][-1]
-        move_set.append(__interpolate(state, beginning_move, moves[0]))
+        move_set.append(__interpolate(state, beginning_move, moves[0], container_to_grab=moves[0]))
         move_set.append(moves)
         container_to_move = state.containers.pop(best_target)
         container_to_move.sifted = True
@@ -450,7 +450,7 @@ def __get_moves(state, excluded_columns):
     return moves
 
 
-def __interpolate(state, start, end):
+def __interpolate(state, start, end, container_to_grab=(0, 0)):
     if type(start) is str:
         start = (0, 0)
     if type(end) is str:
@@ -480,7 +480,7 @@ def __interpolate(state, start, end):
         step = -1
 
     while coord[1] < end[1] or coord[1] > end[1]:
-        while coord[0] <= 8 and ((coord[0], coord[1] + step) in state.containers
+        while coord[0] <= 8 and (((coord[0], coord[1] + step) in state.containers and (coord[0], coord[1] + step) != container_to_grab)
                                  or (start[0] > 0 and not state.ship[coord[0]][coord[1] + step])):
             if start[0] > 0:
                 coord = (coord[0] + 1, coord[1])
@@ -585,7 +585,7 @@ def __free_coord(state, coord_to_free, move_set, target, weights, destinations, 
             beginning_move = (9, 1)
         else:
             beginning_move = move_set[-1][-1]
-        move_set.append(__interpolate(state, beginning_move, ideal_moves[0]))
+        move_set.append(__interpolate(state, beginning_move, ideal_moves[0], container_to_grab=ideal_moves[0]))
         move_set.append(ideal_moves)
         container_to_move = state.containers.pop(coord)
         state.containers[ideal_moves[-1]] = container_to_move
