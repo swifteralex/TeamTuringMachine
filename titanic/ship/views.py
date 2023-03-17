@@ -184,8 +184,6 @@ def animate(request, userid, shipid):
                 
         newActionSequence.append(newList)
 
-    print(newActionSequence)
-
     containers, containerNames = create_file_index()
     operator = string.capwords(get_object_or_404(Operator, id=userid).operator_text)
     shipName = string.capwords(get_object_or_404(ShipName, id=shipid).ship_name)

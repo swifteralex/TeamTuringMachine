@@ -79,9 +79,9 @@ function toggleClick(element) {
       elementList[i].classList.toggle("list-highlight");
     }
   } else if (elementName.toLowerCase() !== "nan" && elementName.toLowerCase() !== "unused") {
-    if(elementList.length > 0 && !elementList[0].classList.contains("container-clicked")){
+    if(elementList.length > 0 && !element.classList.contains("container-clicked")){
       updateCounts(true, 1);
-    } else if (elementList.length > 0 && elementList[0].classList.contains("container-clicked")) {
+    } else if (elementList.length > 0 && element.classList.contains("container-clicked")) {
       updateCounts(true, -1);
     }
   

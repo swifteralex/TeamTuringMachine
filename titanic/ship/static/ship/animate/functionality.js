@@ -9,6 +9,7 @@ var totalStepCount;
 var currentInterval;
 var initialPage;
 var emptyCrane = false;
+var done = false;
 let containerWeightDict;
 
 //Help from: https://docs.djangoproject.com/en/4.0/ref/csrf/#:%7E:text=Setting%20the%20token%20on%20the%20AJAX%20request¶
@@ -66,6 +67,8 @@ function prepData(listOfSteps, timeSet, currentShipId, isBalance) {
   containerWeightDict = JSON.parse((document.getElementById("hidden-load-weights") || {}).value || '{}');
   initialPage =  document.getElementById("transaction-wrapper").innerHTML;
   allActions = listOfSteps;
+  emptyCrane = false;
+  done = false;
   
   let containerName = ""
   let containerPos = [];
@@ -185,9 +188,10 @@ function initAnimate(step) {
   emptyCrane = loadAction ? false : !emptyCrane;
 
   startClear(step);
-  currentActionList.push({ ...currentActionList[currentActionList.length - 1] });
-  currentActionList.push({ ...currentActionList[currentActionList.length - 1] });
-  currentInterval = setInterval(toggleAnimation, 500, currentActionList, itemName, step, emptyCrane);
+  currentActionListCopy = [...currentActionList];
+  currentActionListCopy.push({ ...currentActionList[currentActionList.length - 1] });
+  currentActionListCopy.push({ ...currentActionList[currentActionList.length - 1] });
+  currentInterval = setInterval(toggleAnimation, 500, currentActionListCopy, itemName, step, emptyCrane);
 }
 
 function startClear(step){
@@ -203,6 +207,7 @@ function startClear(step){
 
   if(isProcessFinished){
     document.getElementById("proccess-complete-button").classList.remove("hidden");
+    done = true;
   }
 
   for (let i = 0; i < step && i < statesPerStep.length; i++) {
@@ -294,6 +299,9 @@ function toggleLog(element){
 }
 
 function toggleProcess(){
+  logText = "Finished a cycle. Outbound manifest written to desktop, and a reminder pop-up to operator to send file was displayed.";
+  sendLog(logText);
+
   document.getElementById("process-done-box").classList.remove("hidden");
 
   getFinalContent();
@@ -337,12 +345,17 @@ function getFinalContent(){
 function containerDone(){
   let currentStep = parseInt(document.getElementById("current-step").textContent.trim());
   let currentContainer = statesPerStep[currentStep - 1]
-  isLoad = currentContainer['isLoad'];
+  isLoad = allActions[currentStep - 1][0][0] === 0;
 
-  if(isLoad){
-    logText = "\"" + currentContainer['containerName'] + "\" is " + (isLoad ? "loaded." : "unloaded.");
-
-    sendLog(logText);
+  console.log(currentStep - 1);
+  if (!done) {
+    if (!emptyCrane && (isLoad || (allActions[currentStep - 1][allActions[currentStep - 1].length - 1][0] === 0))) {
+      logText = "\"" + currentContainer['containerName'] + "\" is " + (isLoad ? "loaded." : "unloaded.");
+      sendLog(logText);
+    } else if (!emptyCrane) {
+      logText = "\"" + currentContainer['containerName'] + "\" moved.";
+      sendLog(logText);
+    }
   }
 
   if(currentStep === totalStepCount) {
