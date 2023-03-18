@@ -195,6 +195,12 @@ function submitValues() {
 
   for (let i = 0; i < loadItems.length; i++) {
     containerName = loadItems[i].getAttribute("name");
+    if (containerName.toLowerCase() === "nan") {
+      containerName = "\"NAN\"";
+    }
+    if (containerName.toLowerCase() === "unused") {
+      containerName = "\"UNUSED\"";
+    }
     loadWeightsDict[containerName] = parseInt(loadItems[i].getAttribute("weight"));
 
     for (let j = 0; j < loadItems[i].getAttribute("amount"); j++) {
