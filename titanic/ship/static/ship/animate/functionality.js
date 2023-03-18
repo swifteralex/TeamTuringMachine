@@ -225,7 +225,6 @@ function startClear(step){
 
       if(isLoad){
         element.getElementsByClassName("grid-content")[0].textContent = containerName;
-        element.classList.add("container-" + containerName);
         element.classList.remove("container-UNUSED");
         element.classList.remove("recently-removed");
         element.classList.add("recently-added");
@@ -233,7 +232,6 @@ function startClear(step){
       } else {
         if(!isFromTruck) {
           element.getElementsByClassName("grid-content")[0].textContent = "UNUSED";
-          element.classList.remove("container-" + containerName);
           element.classList.remove("recently-added");
           element.classList.add("container-UNUSED")
           element.classList.add("recently-removed");
@@ -347,7 +345,6 @@ function containerDone(){
   let currentContainer = statesPerStep[currentStep - 1]
   isLoad = allActions[currentStep - 1][0][0] === 0;
 
-  console.log(currentStep - 1);
   if (!done) {
     if (!emptyCrane && (isLoad || (allActions[currentStep - 1][allActions[currentStep - 1].length - 1][0] === 0))) {
       logText = "\"" + currentContainer['containerName'] + "\" is " + (isLoad ? "loaded." : "unloaded.");
