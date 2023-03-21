@@ -14,4 +14,4 @@ Voila!
 
 ![PATH Variable](https://www.pylenin.com/content/images/size/w1000/2021/08/Why-learn-Python--7-.png)
 
-3. Run RunApplication.bat, which will open Microsoft Edge with our application.
+3. Run RunApplication.bat (located within this repo), which will open Microsoft Edge with our application.
